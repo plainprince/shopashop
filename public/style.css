@@ -1,0 +1,267 @@
+#main {
+    display: none;
+    margin-top: 12vh;
+}
+
+.shoppingcartdiv {
+    display: none;
+}
+
+.shoppingcart-total {
+    display: inline;
+}
+
+#changePasswordDiv {
+    display: none;
+}
+
+#user {
+    display: none;
+}
+
+#outputdiv {
+    position: fixed;
+    bottom: 0;
+    left: 35%;
+    background-color: #e7e7e7;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 10%;
+    width: 30%;
+    padding: 10px;
+    border-radius: 5px;
+    transform: translateY(100%);
+    text-align: center;
+}
+
+@keyframes notification {
+    0% {
+        transform: translateY(100%);
+    }
+
+    25% {
+        transform: translateY(-50%);
+    }
+
+    75% {
+        transform: translateY(-50%);
+    }
+
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+#user {
+    position: fixed;
+    right: 1vw;
+    width: 5vw;
+    top: 1vh;
+    height: 5vw;
+}
+
+#dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    z-index: 1;
+}
+
+#user:hover #dropdown {
+    display: block;
+}
+
+#navbar {
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10vh;
+    background-color: springgreen;
+}
+
+#shoppable-text {
+    position: absolute;
+    left: 1vw;
+}
+
+#shoppingopenbutton {
+    position: fixed;
+    left: 33%;
+    top: 5%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+#shoppingcartopen {
+    position: fixed;
+    left: 66%;
+    top: 5%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+button,
+input[type="submit"] {
+    background-color: white;
+    padding: 12px 16px;
+    border: 0.15rem solid #1a89ff;
+    border-radius: 0.3rem;
+    transition-duration: 0.3s;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #1a89ff;
+    transition-duration: 0.3s;
+    color: white;
+}
+
+button:hover:disabled,
+input[type="submit"]:hover:disabled,
+button:disabled,
+input[type="submit"]:disabled {
+    background-color: white;
+    color: gray;
+    cursor: not-allowed;
+}
+
+#log {
+    margin-top: 12vh;
+}
+
+#buttons {
+    display: none;
+}
+
+#login {
+    display: none;
+}
+
+.loginNotOpened,
+.loginNotOpened:hover {
+    background-color: white;
+    padding: 12px 16px;
+    border: 0.15rem solid #1a89ff;
+    border-radius: 0.3rem;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: black;
+}
+
+.loginOpened,
+.loginOpened:hover {
+    background-color: #1a89ff;
+    color: white;
+}
+
+.signupOpened,
+.signupOpened:hover {
+    background-color: #1a89ff;
+    padding: 12px 16px;
+    border: 0.15rem solid #1a89ff;
+    border-radius: 0.3rem;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: white;
+}
+
+.signupNotOpened,
+.signupNotOpened:hover {
+    background-color: white;
+    color: black;
+}
+
+#register>*,
+#login>* {
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+#register,
+#login {
+    margin-top: 1rem;
+}
+
+#login>input[type="submit"],
+#register>input[type="submit"] {
+    padding: 4px 6px;
+}
+
+.cross {
+    background-image: url("/images/cross.svg");
+    background-size: contain;
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.check {
+    background-image: url("/images/check.svg");
+    background-size: contain;
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+input[type=text],
+input[type=password],
+input[type=email] {
+    width: 30%;
+    padding: 4px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+#searchproductinput {
+    transition: width 0.4s ease-in-out;
+    background-image: url('/images/search.svg');
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 1.5rem;
+    border: 0.1rem solid lightgray;
+    border-radius: 0.3rem;
+}
+
+#searchproductinput:hover,
+#searchproductinput:focus {
+    width: 33%;
+}
+
+.product {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 0.2rem;
+    margin-bottom: 1rem;
+    width: 20%;
+    height: 50vh;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.card-image {
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+}
+
+.product:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    left: 0;
+    padding: 2px 16px;
+}
+
+th {
+    outline: 1px solid black;
+}

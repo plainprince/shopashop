@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="pocketbase.es.mjs"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="navbar">
+        <h1 id="shoppable-text">Shoppable</h1>
+
+        <div id="buttons" class="buttons">
+            <button id="shoppingopenbutton" class="shoppingopenbutton open-pane-button">
+                browse products
+            </button>
+
+            <button id="shoppingcartopen" class="shoppingcartopen open-pane-button">
+                open your shoppingcart
+            </button>
+        </div>
+
+        <div id="user">
+            <div id="userimage"></div>
+            <div id="dropdown">
+                <button id="changePassword" class="changePassword">change password</button>
+                <button id="logout">logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="outputdiv">
+        <span id="output">
+
+        </span>
+    </div>
+        
+    <div id="log">
+        <button id="openRegister" class="signupOpened">Sign Up</button>
+        <button id="openLogin" class="loginNotOpened">Log In</button>
+        <form id="register">
+            <input type="password" minlength="8" maxlength="72" name="password" id="password" placeholder="password">
+            <div id="passwordRules">
+                <div class="cross" id="passwordLengthCheck"></div> Password needs at least 8 characters
+            </div>
+            <input type="password" minlength="8" maxlength="72" name="cpassword" id="cpassword"
+                placeholder="confirm password">
+            <input type="email" name="email" id="email" placeholder="email">
+            <div id="emailRules">
+                <div class="cross" id="emailAtCheck"></div> Email needs to contain an @ <br>
+                <div class="cross" id="emailDotCheck"></div> Email needs to contain a .
+            </div>
+            <input type="text" id="username" name="username" placeholder="username">
+            <input type="submit" value="Register!">
+        </form>
+
+        <form id="login">
+            <input type="password" minlength="8" maxlength="72" name="passwordLogin" id="passwordLogin"
+                placeholder="password">
+            <input type="text" name="emailLogin" id="emailLogin" placeholder="email or username">
+            <input type="submit" value="Login!">
+        </form>
+    </div>
+
+    <div id="changePasswordDiv">
+        <form id="changePasswordForm">
+            <input type="password" minlength="8" maxlength="72" name="newPassword" id="newPassword"
+                placeholder="new password">
+            <input type="password" minlength="8" maxlength="72" name="cNewPassword" id="cNewpassword"
+                placeholder="confirm new password">
+            <input type="submit" value="submit">
+        </form>
+        <button id="closeChangePasswordDiv" class="closeChangePasswordDiv">cancel</button>
+    </div>
+
+    <div id="main">
+        <div class="shopping" id="shopping">
+            <input type="text" name="search" id="searchproductinput">
+
+            <h2>Products:</h2>
+            <div id="products">
+                
+            </div>
+        </div>
+        <div class="shoppingcartdiv" id="shoppingcartdiv">
+            <h2>Shopping cart:</h2>
+            <div id="shoppingcart" class="shoppingcart">
+                <table id="shoppingcart-items" class="shoppingcart-items">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Price/Piece</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+                Total Price: <p id="shoppingcart-total" class="shoppingcart-total">
+                    $0.00
+                </p>
+                <button id="checkout" class="checkout">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js" type="module" defer></script>
+</body>
+
+</html>
