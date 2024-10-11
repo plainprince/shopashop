@@ -49,12 +49,6 @@ setInterval(() => {
     }else {
         document.querySelector('#register > input[type="submit"]').disabled = true;
     }
-
-    if(window.innerWidth > 1050) {
-        document.querySelector('#shopstack-text-header').style.display = 'block';
-    }else {
-        document.querySelector('#shopstack-text-header').style.display = 'none';
-    }
 }, 100);
 
 document.querySelector('#searchproductinput').addEventListener('keyup', () => {

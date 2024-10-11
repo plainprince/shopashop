@@ -97,16 +97,6 @@
     left: 1vw;
 }
 
-#shopstack-text > h1 {
-    margin-left: 8vh;
-    line-height: 100%;
-    height: 100%;
-    top: 100%;
-    position: absolute;
-    margin-top: 1vh;
-    font-size: 8vh;
-}
-
 #shoppingopenbutton {
     position: fixed;
     left: 33%;
