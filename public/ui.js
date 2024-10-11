@@ -49,6 +49,12 @@ setInterval(() => {
     }else {
         document.querySelector('#register > input[type="submit"]').disabled = true;
     }
+
+    if(window.innerWidth > 1050) {
+        document.querySelector('#shopstack-text-header').style.display = 'block';
+    }else {
+        document.querySelector('#shopstack-text-header').style.display = 'none';
+    }
 }, 100);
 
 document.querySelector('#searchproductinput').addEventListener('keyup', () => {
@@ -57,8 +63,9 @@ document.querySelector('#searchproductinput').addEventListener('keyup', () => {
     const products = document.querySelectorAll('.product');
 
     products.forEach(product => {
-        if(product.querySelector('h3').innerText.toLowerCase().includes(searchValue.toLowerCase())) {
-            product.style.display = 'block';
+        if(product.querySelector('h3').innerText.toLowerCase().includes(searchValue.toLowerCase()) ||
+        product.querySelector('.product-desc').innerText.toLowerCase().includes(searchValue.toLowerCase())) {
+            product.style.display = 'inline-block';
         }else {
             product.style.display = 'none';
         }

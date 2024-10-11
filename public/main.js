@@ -48,7 +48,7 @@ products.forEach((i, index) => {
         <img class="card-image" src="${url}" alt="${i.name}">
         <div class="card-body">
             <h3>${i.name}</h3>
-            <p>${i.desc}</p>
+            <p class="product-desc">${i.desc}</p>
             <p>$${i.price.toFixed(2)}</p>
             <button class="buy-button">Add to Cart</button>
         </div>

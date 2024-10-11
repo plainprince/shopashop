@@ -55,10 +55,15 @@
 
 #user {
     position: fixed;
-    right: 1vw;
-    width: 5vw;
+    right: 1vh;
     top: 1vh;
-    height: 5vw;
+    width: 8vh;
+    height: 8vh;
+}
+
+#user > userimage > img, #user > userimage {
+    width: 8vh;
+    height: 8vh;
 }
 
 #dropdown {
@@ -87,9 +92,19 @@
     background-color: springgreen;
 }
 
-#shoppable-text {
+#shopstack-text {
     position: absolute;
     left: 1vw;
+}
+
+#shopstack-text > h1 {
+    margin-left: 8vh;
+    line-height: 100%;
+    height: 100%;
+    top: 100%;
+    position: absolute;
+    margin-top: 1vh;
+    font-size: 8vh;
 }
 
 #shoppingopenbutton {
@@ -234,15 +249,12 @@ input[type=email] {
 
 .product {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
     border-radius: 0.2rem;
-    margin-bottom: 1rem;
-    width: 20%;
-    height: 50vh;
+    width: 24.5%;
+    height: auto;
     display: inline-block;
-    justify-content: center;
-    align-items: center;
-    margin-right: 1rem;
+    margin: 0.2rem;
+    transition: 0.3s;
 }
 
 .card-image {
@@ -264,4 +276,30 @@ input[type=email] {
 
 th {
     outline: 1px solid black;
+}
+
+#main-icon {
+    position: fixed;
+    top: 1vh;
+    left: 1vh;
+    width: 8vh;
+    height: 8vh;
+}
+
+@media screen and (max-width: 499px) {
+    .product {
+        width: 47%;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 1050px) {
+    .product {
+        width: 32%;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .product {
+        width: 19%;
+    }
 }
