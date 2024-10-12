@@ -74,16 +74,16 @@ products.forEach((i, index) => {
     document.querySelector('#products').appendChild(el);
 })
 
-document.querySelectorAll('.open-pane-button').forEach(e => {
-    e.addEventListener('click', (e) => {
-        if (e.target.id === 'shoppingopenbutton') {
-            document.querySelector('.shopping').style.display = 'block';
-            document.querySelector('.shoppingcartdiv').style.display = 'none';
-        };
-        console.log(e.target.id)
-        if (e.target.id === 'shoppingcartopen') {
-            document.querySelector('.shopping').style.display = 'none';
-            document.querySelector('.shoppingcartdiv').style.display = 'block';
-        };
+document.querySelectorAll('#shoppingopenbutton, #shoppingopenbutton > img').forEach(i => {
+    i.addEventListener('click', () => {
+        document.querySelector('.shopping').style.display = 'block';
+        document.querySelector('.shoppingcartdiv').style.display = 'none';
     })
-});
+})
+
+document.querySelectorAll('#shoppingcartopen, #shoppingcartopen > img').forEach(i => {
+    i.addEventListener('click', () => {
+        document.querySelector('.shopping').style.display = 'none';
+        document.querySelector('.shoppingcartdiv').style.display = 'block';
+    })
+})

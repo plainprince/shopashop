@@ -1,6 +1,6 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
+import express from 'express';
+import nodemailer from 'nodemailer';
+import cors from 'cors';
 import PocketBase from 'pocketbase';
 
 const pb = new PocketBase("http://127.0.0.1:8090");
