@@ -92,7 +92,7 @@
     background-color: springgreen;
 }
 
-#shopstack-text {
+#shopshop-text {
     position: absolute;
     left: 1vw;
 }
@@ -240,7 +240,7 @@ input[type=email] {
 .product {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 0.2rem;
-    width: 24.5%;
+    width: 23%;
     height: auto;
     display: inline-block;
     margin: 0.2rem;

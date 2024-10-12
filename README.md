@@ -1,4 +1,4 @@
-# Shoppable
+# Shopshop
 
 To install dependencies:
 
