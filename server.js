@@ -2,10 +2,12 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import PocketBase from 'pocketbase';
+import { writeFile } from 'fs/promises';
+import { exec, spawn, spawnSync } from 'child_process';
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 const app = express();
-await pb.admins.authWithPassword('simeon@linkum.de', 'Vahb5ohxpb');
+await pb.admins.authWithPassword('test@bot.com', 'botbotbotbot');
 const transporter = nodemailer.createTransport({
     host: 'smtp.ionos.de',
     port: 465,
@@ -31,6 +33,35 @@ function sendMail(mailSettings) {
             res.json({ info: "email sent successfully" })
         }
     });
+}
+
+async function createServer(name) {
+    let script = `
+docker run -t --name "${name}" --rm -v "$(pwd)":"$(pwd)" -p 80:80 -p 8090:8090 node:22.4.0-alpine
+echo started container
+    `
+    await writeFile('createContainer.sh', script, {})
+    let child = exec('bash createContainer.sh')
+    child.stderr.on('data', d => console.error(d))
+    
+    await new Promise(resolve => {
+        child.stdout.on('data', d => {
+            console.log(d)
+            console.log('done')
+            resolve()
+        })
+    })
+    
+    script = `
+docker exec "${name}" /Users/simeonkummer/dev/pb-chat/pocketbase-linux serve &
+docker exec "${name}" node /Users/simeonkummer/dev/pb-chat/server.js`
+
+    await writeFile('createContainer.sh', script, {})
+     
+    // child = exec('bash createContainer.sh')
+    // child.on('data', d => console.error(d))
+    // child.stderr.on('data', d => console.error(d))
+    // child.stdout.on('data', d => console.log(d))
 }
 
 app.use(cors());
@@ -82,8 +113,8 @@ app.post('/updateShoppingCart', async (req, res) => {
 app.post('/changePassword', async (req, res) => {
     const { newPassword, newPasswordConfirm, email } = req.body
 
-    if(newPassword !== newPasswordConfirm) {
-        res.json({info: 'error: passwords did not match.', errorCode: 1})
+    if (newPassword !== newPasswordConfirm) {
+        res.json({ info: 'error: passwords did not match.', errorCode: 1 })
     }
 
     let random = performance.now();
@@ -118,9 +149,10 @@ app.post('/changePassword', async (req, res) => {
         });
     })
 
-    res.json({info: 'done - now check your mail', errorCode: 0})
+    res.json({ info: 'done - now check your mail', errorCode: 0 })
 })
 
 app.listen(80, () => {
     console.log('server listening on port 80');
+    createServer('testa')
 })

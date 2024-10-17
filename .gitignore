@@ -2,3 +2,8 @@
 node_modules
 pb_data
 pb_migrations
+.idea
+./pocketbase
+./pocketbase-linux
+package-lock.json
+bun.lockb
