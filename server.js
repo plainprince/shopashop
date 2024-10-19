@@ -39,21 +39,16 @@ function sendMail(mailSettings) {
 
 async function createServer(name, shopID, shopUrl, iconSVG) {
     return new Promise(async resolve => {
-        console.log('1');
         if(!(await exists('./apps'))) {
             await mkdir('./apps', {});
         }
-        console.log('1');
         await cp('./example/', `./apps/${shopID}/`, {recursive: true}, (err) => {
             if(err) throw new Error(err);
         });
-        console.log('1');
         await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
             if(err) throw new Error(err)
         })
-        console.log('1');
         app.use(`/${shopUrl}/`, express.static(`./apps/${shopID}/`))
-        console.log('1');
         await pb.collection('shops').create({
             shopName: name,
             shopID,
@@ -61,24 +56,18 @@ async function createServer(name, shopID, shopUrl, iconSVG) {
             boughtProducts: [],
             shopURL: shopUrl
         })
-        console.log('1');
 
         resolve()
     })
 }
 
 async function createProduct(shopURL, product, svg) {
-    console.log('2');
     let shop = await pb.collection('shops').getFirstListItem(`shopURL="${shopURL}"`, {})
-    console.log('2');
     let shopID = shop.shopID;
     console.log(shop)
-    console.log('2');
     product.image = `/${shopURL}/images/productImages/${shop.shopProducts.length + 1}.svg`
     shop.shopProducts.push(product);
-    console.log('2');
     await pb.collection('shops').update(shop.id, shop)
-    console.log('2');
     await writeFile(__dirname + `/apps/${shopID}/images/productImages/${shop.shopProducts.length}.svg`, svg, (err) => {
         if(err) throw err
     })
