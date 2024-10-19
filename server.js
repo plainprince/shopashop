@@ -2,8 +2,8 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import PocketBase from 'pocketbase';
-import { writeFile } from 'fs/promises';
-import { exec, spawn, spawnSync } from 'child_process';
+import { cp, exists, mkdir, writeFile } from 'fs/promises';
+require('dotenv').config();
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 const app = express();
@@ -14,14 +14,16 @@ const transporter = nodemailer.createTransport({
     secure: true,
     requiresAuth: true,
     auth: {
-        user: "simeon@linkum.de",
-        pass: "xof5Ao9u$"
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     },
     requireTLS: true,
     tls: {
         rejectUnauthorized: false
     }
 });
+pb.autoCancellation(false)
+let shopID = (await pb.collection('shops').getFullList()).length;
 
 function sendMail(mailSettings) {
     transporter.sendMail(mailSettings, function (error, info) {
@@ -35,33 +37,63 @@ function sendMail(mailSettings) {
     });
 }
 
-async function createServer(name) {
-    let script = `
-docker run -t --name "${name}" --rm -v "$(pwd)":"$(pwd)" -p 80:80 -p 8090:8090 node:22.4.0-alpine
-echo started container
-    `
-    await writeFile('createContainer.sh', script, {})
-    let child = exec('bash createContainer.sh')
-    child.stderr.on('data', d => console.error(d))
-    
-    await new Promise(resolve => {
-        child.stdout.on('data', d => {
-            console.log(d)
-            console.log('done')
-            resolve()
+async function createServer(name, shopID, shopUrl, iconSVG) {
+    return new Promise(async resolve => {
+        console.log('1');
+        if(!(await exists('./apps'))) {
+            await mkdir('./apps', {});
+        }
+        console.log('1');
+        await cp('./example/', `./apps/${shopID}/`, {recursive: true}, (err) => {
+            if(err) throw new Error(err);
+        });
+        console.log('1');
+        await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
+            if(err) throw new Error(err)
         })
-    })
-    
-    script = `
-docker exec "${name}" /Users/simeonkummer/dev/pb-chat/pocketbase-linux serve &
-docker exec "${name}" node /Users/simeonkummer/dev/pb-chat/server.js`
+        console.log('1');
+        app.use(`/${shopUrl}/`, express.static(`./apps/${shopID}/`))
+        console.log('1');
+        await pb.collection('shops').create({
+            shopName: name,
+            shopID,
+            shopProducts: [],
+            boughtProducts: [],
+            shopURL: shopUrl
+        })
+        console.log('1');
 
-    await writeFile('createContainer.sh', script, {})
-     
-    // child = exec('bash createContainer.sh')
-    // child.on('data', d => console.error(d))
-    // child.stderr.on('data', d => console.error(d))
-    // child.stdout.on('data', d => console.log(d))
+        resolve()
+    })
+}
+
+async function createProduct(shopURL, product, svg) {
+    console.log('2');
+    let shop = await pb.collection('shops').getFirstListItem(`shopURL="${shopURL}"`, {})
+    console.log('2');
+    let shopID = shop.shopID;
+    console.log(shop)
+    console.log('2');
+    product.image = `/${shopURL}/images/productImages/${shop.shopProducts.length + 1}.svg`
+    shop.shopProducts.push(product);
+    console.log('2');
+    await pb.collection('shops').update(shop.id, shop)
+    console.log('2');
+    await writeFile(__dirname + `/apps/${shopID}/images/productImages/${shop.shopProducts.length}.svg`, svg, (err) => {
+        if(err) throw err
+    })
+
+    // handle payments too
+
+    app.post(`/${shopURL}/bought-product/`, async (req, res) => {
+        let { product, boughtBy } = req.body
+
+        product.boughtBy = boughtBy;
+
+        shop.boughtProducts.push(product)
+        
+        pb.collection('shops').update(shop.id, shop);
+    })
 }
 
 app.use(cors());
@@ -152,7 +184,10 @@ app.post('/changePassword', async (req, res) => {
     res.json({ info: 'done - now check your mail', errorCode: 0 })
 })
 
-app.listen(80, () => {
+app.listen(80, async () => {
     console.log('server listening on port 80');
-    createServer('testa')
+    console.log(shopID)
+    await createServer('testa', 0, 'testa')
+    shopID++;
+    createProduct('testa', {name: "test", price: 0.00}, "someSVG")
 })

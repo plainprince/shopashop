@@ -145,10 +145,6 @@ input[type="submit"]:disabled {
     display: none;
 }
 
-#login {
-    display: none;
-}
-
 .loginNotOpened,
 .loginNotOpened:hover {
     background-color: white;

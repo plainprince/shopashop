@@ -7,3 +7,5 @@ pb_migrations
 ./pocketbase-linux
 package-lock.json
 bun.lockb
+.env
+apps

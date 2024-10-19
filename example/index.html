@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/pocketbase.es.mjs"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="navbar">
+        <div id="shopshop-text">
+            <img id="main-icon" src="/images/icon.svg" alt="ShopShop">
+        </div>
+
+        <div id="buttons" class="buttons">
+            <button id="shoppingopenbutton" class="shoppingopenbutton open-pane-button">
+                <img src="/images/storefront.svg" alt="browse products">
+            </button>
+
+            <button id="shoppingcartopen" class="shoppingcartopen open-pane-button">
+                <img src="/images/shoppingcart.svg" alt="open shoppingcart">
+            </button>
+        </div>
+
+        <div id="user">
+            <div id="userimage"></div>
+            <div id="dropdown">
+                <button id="logout">logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="outputdiv">
+        <span id="output">
+
+        </span>
+    </div>
+        
+    <div id="log">
+        <form id="login">
+            <input type="text" id="username" name="username" placeholder="username">
+            <input type="submit" value="Login!">
+        </form>
+    </div>
+
+    <div id="main">
+        <div class="shopping" id="shopping">
+            <input type="text" name="search" id="searchproductinput">
+
+            <h2>Products:</h2>
+            <div id="products">
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js" type="module" defer></script>
+</body>
+
+</html>
