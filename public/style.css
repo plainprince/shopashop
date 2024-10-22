@@ -99,16 +99,27 @@
 
 #shoppingopenbutton {
     position: fixed;
-    left: 33%;
+    left: 25%;
     top: 5%;
     transform: translateX(-50%) translateY(-50%);
 }
 
 #shoppingcartopen {
     position: fixed;
-    left: 66%;
+    left: 50%;
     top: 5%;
     transform: translateX(-50%) translateY(-50%);
+}
+
+#customizationopen {
+    position: fixed;
+    left: 75%;
+    top: 5%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+#customizationdiv, #customizationdiv > #customize-product-container {
+    display: none;
 }
 
 button,
@@ -240,7 +251,7 @@ input[type=email] {
 .product {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 0.2rem;
-    width: 24.5%;
+    width: 23%;
     height: auto;
     display: inline-block;
     margin: 0.2rem;
@@ -282,8 +293,32 @@ th {
     }
 }
 
-@media screen and (min-width: 500px) and (max-width: 1050px) {
+@media screen and (min-width: 500px) and (max-width: 1176px) {
     .product {
         width: 32%;
     }
+}
+
+#customize-popup {
+    position: fixed;
+    z-index: 999999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 1rem;
+    border-radius: 1rem;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#customize-popup.visible {
+    opacity: 1;
+    display: block;
+}
+
+.customize-popup-header {
+    margin-top: 0;
 }

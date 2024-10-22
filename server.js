@@ -31,30 +31,38 @@ function sendMail(mailSettings) {
             console.log(error);
             res.json({ info: "Error when sending email" })
         } else {
-            console.log('Email sent: ' + info.response);
             res.json({ info: "email sent successfully" })
         }
     });
 }
 
-async function createServer(name, shopID, shopUrl, iconSVG) {
+async function startServer(shopID, shopURL, iconSVG) {
+    if (!(await exists('./apps'))) {
+        await mkdir('./apps', {});
+    }
+    await cp('./example/', `./apps/${shopID}/`, { recursive: true }, (err) => {
+        if (err) throw new Error(err);
+    });
+    await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
+        if (err) throw new Error(err)
+    })
+    app.use(`${shopURL}`, express.static(`./apps/${shopID}/`))
+    console.log(shopID, shopURL)
+}
+
+async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, shopOwner) {
     return new Promise(async resolve => {
-        if(!(await exists('./apps'))) {
-            await mkdir('./apps', {});
-        }
-        await cp('./example/', `./apps/${shopID}/`, {recursive: true}, (err) => {
-            if(err) throw new Error(err);
-        });
-        await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
-            if(err) throw new Error(err)
-        })
-        app.use(`/${shopUrl}/`, express.static(`./apps/${shopID}/`))
+        await startServer(shopID, '/' + shopUrl, iconSVG)
+
         await pb.collection('shops').create({
             shopName: name,
             shopID,
-            shopProducts: [],
+            shopProducts: products || [],
             boughtProducts: [],
-            shopURL: shopUrl
+            shopURL: '/' + shopUrl,
+            buttonColor: buttonColor,
+            shopOwner,
+            iconSVG
         })
 
         resolve()
@@ -64,12 +72,11 @@ async function createServer(name, shopID, shopUrl, iconSVG) {
 async function createProduct(shopURL, product, svg) {
     let shop = await pb.collection('shops').getFirstListItem(`shopURL="${shopURL}"`, {})
     let shopID = shop.shopID;
-    console.log(shop)
     product.image = `/${shopURL}/images/productImages/${shop.shopProducts.length + 1}.svg`
     shop.shopProducts.push(product);
     await pb.collection('shops').update(shop.id, shop)
     await writeFile(__dirname + `/apps/${shopID}/images/productImages/${shop.shopProducts.length}.svg`, svg, (err) => {
-        if(err) throw err
+        if (err) throw err
     })
 
     // handle payments too
@@ -80,10 +87,14 @@ async function createProduct(shopURL, product, svg) {
         product.boughtBy = boughtBy;
 
         shop.boughtProducts.push(product)
-        
+
         pb.collection('shops').update(shop.id, shop);
     })
 }
+
+(await pb.collection('shops').getFullList()).forEach(i => {
+    startServer(i.shopID, i.shopURL, i.iconSVG)
+})
 
 app.use(cors());
 app.use(express.static('public'));
@@ -121,9 +132,9 @@ app.get('/email/:email', (req, res) => {
 })
 
 app.post('/updateShoppingCart', async (req, res) => {
-    let { username, shoppingCart } = req.body
+    let { userID, shoppingCart } = req.body
+    let username = await pb.collection('users').getFirstListItem(`id="${userID}"`).username
     let data = await pb.collection('users').getFirstListItem(`username="${username}"`, {})
-    console.log(data);
     data.shoppingcart.shoppingcart = shoppingCart
     let stringData = JSON.stringify(data)
     await pb.collection('users').update(data.id, stringData)
@@ -173,10 +184,94 @@ app.post('/changePassword', async (req, res) => {
     res.json({ info: 'done - now check your mail', errorCode: 0 })
 })
 
+let spamArray = []
+
+app.post('/shoppingcart-bought', async (req, res) => {
+    const { userID, shoppingcart } = req.body;
+    let username = await pb.collection('users').getFirstListItem(`id="${userID}"`).username
+    if (spamArray.includes(username)) {
+        res.json({
+            info: 'Dont even try to do any type of attack, fuck off.',
+            errorCode: 1
+        })
+        return;
+    } else {
+        spamArray.push(username)
+    }
+
+    let data = await pb.collection('users').getFirstListItem(`username="${username}"`, {})
+    data.shoppingcart.shoppingcart = [];
+    await pb.collection('users').update(data.id, data)
+
+    let error = false;
+
+    shoppingcart.forEach(async i => {
+        let server = await pb.collection('products').getFirstListItem(`id="${i.id}"`, {})
+        if (server.name === 'Simple GameShop') {
+            console.log(i.shopName, i.shopURL, i.iconSVG)
+            await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, username)
+            console.log('created server');
+        }
+    });
+
+    if (!error) {
+        res.json({
+            info: 'created servers successfully',
+            errorCode: 0
+        })
+        return
+    }
+
+    res.json({
+        info: 'something unknown went wrong',
+        errorCode: 1
+    })
+    spamArray = spamArray.filter(username => username !== username);
+})
+
+app.post('/updateShop', async (req, res) => {
+    let { userID, newShop, oldShopID } = req.body;
+
+    let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
+    let oldShop = await pb.collection('shops').getFirstListItem(`shopID="${oldShopID}"`)
+
+    let oldShopRoute = oldShop.shopURL;
+    let oldShopOwner = oldShop.shopOwner;
+    let oldShopEntryID = oldShop.id;
+
+    if(!(oldShopOwner === username)) {
+        res.json({
+            info: 'you are not the owner of this shop',
+            errorCode: 1
+        })
+        return;
+    }
+
+    const middlewareIndex = app._router.stack.findIndex(layer => {
+        return layer.path === oldShopRoute
+    });
+
+    app._router.stack.splice(middlewareIndex, 1);
+
+    app.use(newShop.shopURL, express.static(`./apps/${oldShopID}/`))
+
+    try {
+        await pb.collection('shops').update(oldShopEntryID, newShop)
+    } catch(e) {
+        console.error(e)
+        res.json({
+            info: 'failed to update shop',
+            errorCode: 1
+        })
+        return;
+    }    
+
+    res.json({
+        info: 'updated shop successfully',
+        errorCode: 0
+    })
+})
+
 app.listen(80, async () => {
     console.log('server listening on port 80');
-    console.log(shopID)
-    await createServer('testa', 0, 'testa')
-    shopID++;
-    createProduct('testa', {name: "test", price: 0.00}, "someSVG")
 })

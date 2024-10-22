@@ -141,10 +141,6 @@ input[type="submit"]:disabled {
     margin-top: 12vh;
 }
 
-#buttons {
-    display: none;
-}
-
 .loginNotOpened,
 .loginNotOpened:hover {
     background-color: white;
@@ -282,4 +278,9 @@ th {
     .product {
         width: 32%;
     }
+}
+
+#logout {
+    right: 2vw;
+    position: fixed;
 }

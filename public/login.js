@@ -151,7 +151,7 @@ async function updateUser(shoppingCart) {
         },
         body: JSON.stringify({
             shoppingCart,
-            username: pb.authStore.model.username
+            userID: pb.authStore.model.id
         }),
     })
 }

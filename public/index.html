@@ -12,7 +12,7 @@
 <body>
     <div id="navbar">
         <div id="shopshop-text">
-            <img id="main-icon" src="/images/icon.svg" alt="ShopShop">
+            <img id="main-icon" src="/images/icon.svg" alt="ShopAShop">
         </div>
 
         <div id="buttons" class="buttons">
@@ -22,6 +22,10 @@
 
             <button id="shoppingcartopen" class="shoppingcartopen open-pane-button">
                 <img src="/images/shoppingcart.svg" alt="open shoppingcart">
+            </button>
+
+            <button id="customizationopen" class="customizationopen open-pane-button">
+                <img src="/images/customization.svg" alt="open customization">
             </button>
         </div>
 
@@ -95,8 +99,6 @@
                         <tr>
                             <th>Product</th>
                             <th>Price</th>
-                            <th>Price/Piece</th>
-                            <th>Quantity</th>
                             <th>Remove</th>
                         </tr>
                     </thead>
@@ -109,6 +111,48 @@
                 </p>
                 <button id="checkout" class="checkout">Checkout</button>
             </div>
+        </div>
+        <div class="customizationdiv" id="customizationdiv">
+            <h2>Your shops:</h2>
+            <div id="shops">
+                <ul id="shopslist"></ul>
+            </div>
+            <div class="customize-product-container">
+                <h2 id="customize-popup-header">Customize Product</h2>
+                <label for="color-gs-customize">Color of buttons:</label>
+                <input type="color" name="color-gs-customize" id="color-gs-customize" value="#0000ff"><br>
+                <label for="name-gs-customize">Name of your GameShop:</label>
+                <input type="text" id="name-gs-customize" placeholder="some cool name" name="name-gs-customize"><br>
+                <label for="url-gs">URL of your GameShop:</label>
+                <input type="text" id="url-gs-customize" placeholder="somecoolname" name="url-gs-customize"><br>
+                <label for="icon-gs">Icon of your GameShop:</label>
+                <input type="text" id="icon-gs-customize" placeholder="<svg..." name="icon-gs-customize"><br>
+                <div id="customize-products-container">
+                    <ul id="cusotmize-product-container-list"></ul>
+                    <div id="customize-products-edit">
+                        <input type="text" id="customize-products-edit-name" placeholder="name">
+                        <textarea id="customize-products-edit-desc" placeholder="description"></textarea>
+                        <input type="text" id="customize-products-edit-icon" placeholder="<svg...">
+                        <input type="number" id="customize-products-edit-price" placeholder="0.00">
+                        <button id="customize-products-edit-add-button"><img src="/images/add.svg" alt="add"></button>
+                        <button id="customize-products-edit-delete-button"><img src="/images/remove.svg" alt="remove"></button>
+                    </div>
+                </div>
+                <button id="customize-product-save-changes-button">save changes</button>
+            </div>
+        </div>
+        <div id="customize-popup">
+            <h2 class="customize-popup-header">Customize Product</h2>
+            <label for="color-gs">Color of buttons:</label>
+            <input type="color" name="color-gs" id="color-gs" value="#0000ff"><br>
+            <label for="name-gs">Name of your GameShop:</label>
+            <input type="text" id="name-gs" placeholder="some cool name" name="name-gs"><br>
+            <label for="url-gs">URL of your GameShop:</label>
+            <input type="text" id="url-gs" placeholder="somecoolname" name="url-gs"><br>
+            <label for="icon-gs">Icon of your GameShop:</label>
+            <input type="text" id="icon-gs" placeholder="<svg..." name="icon-gs"><br>
+            <button id="customize-product-add-cart">Add to Cart</button>
+            <button id="close-customize-popup">Close</button>
         </div>
     </div>
 

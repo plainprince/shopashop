@@ -9,29 +9,16 @@ let username;
 if(localStorage.getItem('loggedIn')) {
     loggedIn = true;
     document.querySelector('#main').style.display = 'block';
+    document.querySelector('#user').style.display = 'block';
     document.querySelector('#login').style.display = 'none';
     username = localStorage.getItem('loggedIn');
-}
-
-function notify(message) {
-    let el = document.createElement('div');
-    el.id = 'outputdiv';
-    el.innerHTML = `<span id="output">
-        ${message}
-    </span>`
-    el.style.animation = 'notification 3s ease-in-out';
-    setTimeout(() => {
-        el.style.animation = '';
-        el.remove()
-    }, 3000);
-    document.body.appendChild(el);
 }
 
 console.log(shopURL)
 
 let data = await pb
     .collection('shops')
-    .getFirstListItem(`shopURL="${shopURL}"`, {})
+    .getFirstListItem(`shopURL="/${shopURL}"`, {})
 data.shopProducts.forEach(i => {
     let el = document.createElement("div");
 
@@ -45,7 +32,7 @@ data.shopProducts.forEach(i => {
             <h3>${i.name}</h3>
             <p class="product-desc">${i.desc}</p>
             <p>$${i.price.toFixed(2)}</p>
-            <button class="buy-button">Buy</button>
+            <button class="buy-button">Buy now</button>
         </div>
     `
     el.classList.add('product');
@@ -81,6 +68,30 @@ document.querySelector('#login').addEventListener('submit', e => {
     username = localStorage.getItem('loggedIn');
 
     document.querySelector('#login').style.display = 'none';
-
     document.querySelector('#main').style.display = 'block';
+    document.querySelector('#user').style.display = 'block';
+})
+
+document.querySelector('#searchproductinput').addEventListener('keyup', () => {
+    const searchValue = document.querySelector('#searchproductinput').value;
+
+    const products = document.querySelectorAll('.product');
+
+    products.forEach(product => {
+        if(product.querySelector('h3').innerText.toLowerCase().includes(searchValue.toLowerCase()) ||
+        product.querySelector('.product-desc').innerText.toLowerCase().includes(searchValue.toLowerCase())) {
+            product.style.display = 'inline-block';
+        }else {
+            product.style.display = 'none';
+        }
+    })
+})
+
+document.querySelector('#logout').addEventListener('click', () => {
+    document.querySelector('#main').style.display = 'none';
+    document.querySelector('#user').style.display = 'none';
+    document.querySelector('#login').style.display = 'block';
+
+    loggedIn = false;
+    localStorage.removeItem('loggedIn');
 })
