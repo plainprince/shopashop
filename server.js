@@ -133,7 +133,7 @@ app.get('/email/:email', (req, res) => {
 
 app.post('/updateShoppingCart', async (req, res) => {
     let { userID, shoppingCart } = req.body
-    let username = await pb.collection('users').getFirstListItem(`id="${userID}"`).username
+    let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
     let data = await pb.collection('users').getFirstListItem(`username="${username}"`, {})
     data.shoppingcart.shoppingcart = shoppingCart
     let stringData = JSON.stringify(data)
@@ -188,7 +188,8 @@ let spamArray = []
 
 app.post('/shoppingcart-bought', async (req, res) => {
     const { userID, shoppingcart } = req.body;
-    let username = await pb.collection('users').getFirstListItem(`id="${userID}"`).username
+    let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
+    console.log(spamArray)
     if (spamArray.includes(username)) {
         res.json({
             info: 'Dont even try to do any type of attack, fuck off.',
@@ -214,6 +215,11 @@ app.post('/shoppingcart-bought', async (req, res) => {
         }
     });
 
+    spamArray = spamArray.filter(i => {
+        console.log(i)
+        return i !== username
+    });
+
     if (!error) {
         res.json({
             info: 'created servers successfully',
@@ -226,14 +232,27 @@ app.post('/shoppingcart-bought', async (req, res) => {
         info: 'something unknown went wrong',
         errorCode: 1
     })
-    spamArray = spamArray.filter(username => username !== username);
 })
 
 app.post('/updateShop', async (req, res) => {
     let { userID, newShop, oldShopID } = req.body;
 
-    let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
-    let oldShop = await pb.collection('shops').getFirstListItem(`shopID="${oldShopID}"`)
+    let username;
+    let oldShop;
+
+    try {
+        username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
+        console.log(oldShopID)
+        oldShop = await pb.collection('shops').getFirstListItem(`shopID="${oldShopID}"`)
+    }catch (e) {
+        console.error(e)
+        res.json({
+            info: 'failed to find user or shop',
+            errorCode: 1
+        })
+        return;
+    }
+    
 
     let oldShopRoute = oldShop.shopURL;
     let oldShopOwner = oldShop.shopOwner;

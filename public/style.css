@@ -61,7 +61,8 @@
     height: 8vh;
 }
 
-#user > userimage > img, #user > userimage {
+#user>userimage>img,
+#user>userimage {
     width: 8vh;
     height: 8vh;
 }
@@ -118,11 +119,12 @@
     transform: translateX(-50%) translateY(-50%);
 }
 
-#customizationdiv, #customizationdiv > #customize-product-container {
+#customizationdiv,
+#customizationdiv>#customize-product-container {
     display: none;
 }
 
-button,
+.btn,
 input[type="submit"] {
     background-color: white;
     padding: 12px 16px;
@@ -132,7 +134,7 @@ input[type="submit"] {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-button:hover,
+button:hover.btn,
 input[type="submit"]:hover {
     background-color: #1a89ff;
     transition-duration: 0.3s;
@@ -299,7 +301,7 @@ th {
     }
 }
 
-#customize-popup {
+#customize-popup, #customize-product-popup {
     position: fixed;
     z-index: 999999;
     top: 50%;
@@ -314,11 +316,41 @@ th {
     transition: opacity 0.3s ease-in-out;
 }
 
-#customize-popup.visible {
+#customize-popup.visible, #customize-product-popup.visible {
     opacity: 1;
     display: block;
 }
 
-.customize-popup-header {
+.customize-popup-header, #customize-product-popup-header {
     margin-top: 0;
+}
+
+#customize-products-edit-add-button,
+#customize-products-edit-remove-button {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+}
+
+#customize-products-edit-add-button>img,
+#customize-products-edit-remove-button>img {
+    width: 2rem;
+    height: 2rem;
+    transform: translate(-50%, -45%);
+}
+
+#customize-products-edit-remove-button {
+    border-color: red;
+}
+
+#customize-products-edit-remove-button:hover {
+    background-color: red;
+}
+
+#customize-products-container-products {
+    display: none;
+}
+
+#customize-products-edit {
+    display: none;
 }

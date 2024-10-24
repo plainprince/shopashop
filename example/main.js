@@ -16,18 +16,22 @@ if(localStorage.getItem('loggedIn')) {
 
 console.log(shopURL)
 
+window.unescape = window.unescape || window.decodeURI;
+
+function svgToBase64(svg) {
+    return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
 let data = await pb
     .collection('shops')
     .getFirstListItem(`shopURL="/${shopURL}"`, {})
-data.shopProducts.forEach(i => {
+data.shopProducts.forEach(async i => {
     let el = document.createElement("div");
 
-    let url = i.image
-
-    console.log(url)
+    let img = i.image
 
     el.innerHTML = `
-        <img class="card-image" src="${url}" alt="${i.name}">
+        <img class="card-image" src="${svgToBase64(img)}" alt="${i.name}">
         <div class="card-body">
             <h3>${i.name}</h3>
             <p class="product-desc">${i.desc}</p>

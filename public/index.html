@@ -16,15 +16,15 @@
         </div>
 
         <div id="buttons" class="buttons">
-            <button id="shoppingopenbutton" class="shoppingopenbutton open-pane-button">
+            <button id="shoppingopenbutton" class="shoppingopenbutton open-pane-button btn">
                 <img src="/images/storefront.svg" alt="browse products">
             </button>
 
-            <button id="shoppingcartopen" class="shoppingcartopen open-pane-button">
+            <button id="shoppingcartopen" class="shoppingcartopen open-pane-button btn">
                 <img src="/images/shoppingcart.svg" alt="open shoppingcart">
             </button>
 
-            <button id="customizationopen" class="customizationopen open-pane-button">
+            <button id="customizationopen" class="customizationopen open-pane-button btn">
                 <img src="/images/customization.svg" alt="open customization">
             </button>
         </div>
@@ -32,8 +32,8 @@
         <div id="user">
             <div id="userimage"></div>
             <div id="dropdown">
-                <button id="changePassword" class="changePassword">change password</button>
-                <button id="logout">logout</button>
+                <button id="changePassword" class="changePassword btn">change password</button>
+                <button id="logout" class="btn">logout</button>
             </div>
         </div>
     </div>
@@ -43,10 +43,10 @@
 
         </span>
     </div>
-        
+
     <div id="log">
-        <button id="openRegister" class="signupOpened">Sign Up</button>
-        <button id="openLogin" class="loginNotOpened">Log In</button>
+        <button id="openRegister" class="signupOpened btn">Sign Up</button>
+        <button id="openLogin" class="loginNotOpened btn">Log In</button>
         <form id="register">
             <input type="password" minlength="8" maxlength="72" name="password" id="password" placeholder="password">
             <div id="passwordRules">
@@ -79,7 +79,7 @@
                 placeholder="confirm new password">
             <input type="submit" value="submit">
         </form>
-        <button id="closeChangePasswordDiv" class="closeChangePasswordDiv">cancel</button>
+        <button id="closeChangePasswordDiv" class="closeChangePasswordDiv btn">cancel</button>
     </div>
 
     <div id="main">
@@ -88,7 +88,7 @@
 
             <h2>Products:</h2>
             <div id="products">
-                
+
             </div>
         </div>
         <div class="shoppingcartdiv" id="shoppingcartdiv">
@@ -103,13 +103,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                     </tbody>
                 </table>
                 Total Price: <p id="shoppingcart-total" class="shoppingcart-total">
                     $0.00
                 </p>
-                <button id="checkout" class="checkout">Checkout</button>
+                <button id="checkout" class="checkout btn">Checkout</button>
             </div>
         </div>
         <div class="customizationdiv" id="customizationdiv">
@@ -117,8 +117,8 @@
             <div id="shops">
                 <ul id="shopslist"></ul>
             </div>
-            <div class="customize-product-container">
-                <h2 id="customize-popup-header">Customize Product</h2>
+            <div id="customize-product-container">
+                <h2 id="customize-popup-header">Customize Shop</h2>
                 <label for="color-gs-customize">Color of buttons:</label>
                 <input type="color" name="color-gs-customize" id="color-gs-customize" value="#0000ff"><br>
                 <label for="name-gs-customize">Name of your GameShop:</label>
@@ -127,19 +127,31 @@
                 <input type="text" id="url-gs-customize" placeholder="somecoolname" name="url-gs-customize"><br>
                 <label for="icon-gs">Icon of your GameShop:</label>
                 <input type="text" id="icon-gs-customize" placeholder="<svg..." name="icon-gs-customize"><br>
-                <div id="customize-products-container">
-                    <ul id="cusotmize-product-container-list"></ul>
+                <div id="customize-products-container-products">
+                    <h3>Products:</h3>
+                    <ul id="customize-products-container-list-products"></ul>
                     <div id="customize-products-edit">
-                        <input type="text" id="customize-products-edit-name" placeholder="name">
-                        <textarea id="customize-products-edit-desc" placeholder="description"></textarea>
-                        <input type="text" id="customize-products-edit-icon" placeholder="<svg...">
-                        <input type="number" id="customize-products-edit-price" placeholder="0.00">
-                        <button id="customize-products-edit-add-button"><img src="/images/add.svg" alt="add"></button>
-                        <button id="customize-products-edit-delete-button"><img src="/images/remove.svg" alt="remove"></button>
+                        <input type="text" id="customize-products-edit-name" placeholder="name"><br>
+                        <textarea id="customize-products-edit-desc" placeholder="description"></textarea><br>
+                        <input type="text" id="customize-products-edit-icon" placeholder="<svg..."><br>
+                        <input type="number" id="customize-products-edit-price" placeholder="0.00"><br><br>
+                        <button id="customize-products-edit-remove-button" class="btn"><img src="/images/remove.svg"
+                                alt="remove"></button>
                     </div>
                 </div>
-                <button id="customize-product-save-changes-button">save changes</button>
+                <button id="customize-products-edit-add-button" class="btn"><img src="/images/add.svg"
+                        alt="add"></button><br>
+                <button id="customize-product-save-changes-button" class="btn">save changes</button>
             </div>
+        </div>
+        <div id="customize-product-popup">
+            <h2 class="customize-product-popup-header">Customize Product</h2>
+            <input type="text" id="customize-products-edit-name-customize" placeholder="name"><br>
+            <textarea id="customize-products-edit-desc-customize" placeholder="description"></textarea><br>
+            <input type="text" id="customize-products-edit-icon-customize" placeholder="<svg..."><br>
+            <input type="number" id="customize-products-edit-price-customize" placeholder="0.00"><br><br>
+            <button id="customize-products-popup-create-button" class="btn">Create Product</button>
+            <button id="customize-products-popup-cancel-button" class="btn">Cancel</button>
         </div>
         <div id="customize-popup">
             <h2 class="customize-popup-header">Customize Product</h2>
@@ -151,8 +163,8 @@
             <input type="text" id="url-gs" placeholder="somecoolname" name="url-gs"><br>
             <label for="icon-gs">Icon of your GameShop:</label>
             <input type="text" id="icon-gs" placeholder="<svg..." name="icon-gs"><br>
-            <button id="customize-product-add-cart">Add to Cart</button>
-            <button id="close-customize-popup">Close</button>
+            <button id="customize-product-add-cart" class="btn">Add to Cart</button>
+            <button id="close-customize-popup" class="btn">Close</button>
         </div>
     </div>
 

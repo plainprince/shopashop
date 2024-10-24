@@ -11,7 +11,7 @@ function updateShoppingCart() {
     userShoppingCart.forEach((i, index) => {
         let el = document.createElement('tr')
         el.innerHTML = `
-            <th>${i.name}</th><th>${i.price}</th><th><button>delete</button></th>
+            <th>${i.name}</th><th>${i.price}</th><th><button class="btn">delete</button></th>
         `
         el.querySelector('button').addEventListener('click', () => {
             userShoppingCart = userShoppingCart.filter((e, index2) => !(e.id === i.id && index2 === index))
@@ -26,13 +26,20 @@ function updateShoppingCart() {
 }
 
 let lastOpenedCreatedProduct = null;
+let lastOpenedCreatedProductproduct = null
+let lastOpenedCreatedProductShop = null;
 
 function updateCustomizationMenu() {
     document.querySelector('#shopslist').innerHTML = '';
+    console.log(shopsOwnedByUser)
     shopsOwnedByUser.forEach(i => {
+        console.log('some shop passed')
         if(i.shopOwner !== pb.authStore.model.username) {
             return;
         }
+        console.log('some shops owner is the user', i.shopName)
+        console.log(i.shopOwner)
+        console.log(i.shopProducts)
         let el = document.createElement('tr')
         el.innerHTML = `
             <li>${i.shopName}</li>
@@ -43,21 +50,98 @@ function updateCustomizationMenu() {
             document.querySelector('#customize-product-container > #url-gs-customize').value = i.shopURL.substring(1);
             document.querySelector('#customize-product-container > #icon-gs-customize').value = i.iconSVG;
             document.querySelector('#customize-product-container').style.display = 'block'
+            document.querySelector('#customize-products-container-products').style.display = 'block'
             lastOpenedCreatedProduct = i;
-        })
-        document.querySelector('#shopslist').appendChild(el)
-        let productsOfShop = i.shopProducts;
-        productsOfShop.forEach(e => {
-            let el2 = document.createElement('li');
-            el2.innerHTML = `${e.name}`;
-            el2.addEventListener('click', () => {
-                document.querySelector('#customize-product-container > #color-gs-customize').value = e.buttonColor;
-                document.querySelector('#customize-product-container > #name-gs-customize').value = e.name;
-                document.querySelector('#customize-product-container > #url-gs-customize').value = e.shopURL.substring(1);
+            let productsOfShop = i.shopProducts;
+            document.querySelector('#customize-products-container-list-products').innerHTML = '';
+            productsOfShop.forEach(e => {
+                let el3 = document.createElement('li');
+                el3.innerHTML = `${e.name}`;
+                el3.addEventListener('click', () => {
+                    document.querySelector('#customize-product-container > #color-gs-customize').value = e.buttonColor;
+                    document.querySelector('#customize-product-container > #name-gs-customize').value = e.name;
+                    document.querySelector('#customize-product-container > #url-gs-customize').value = e.shopURL.substring(1);
+                })
+                el2s = [];
+                document.querySelector('#customize-products-container-list-products').innerHTML = '';
+                i.shopProducts.forEach((e, index, self) => {
+                    let el2 = document.createElement('li');
+                    el2.innerText = e.name
+                    el2.innerHTML += '<br>'
+                    el2.style.display = 'inline';
+                    el2.addEventListener('click', () => {
+                        document.querySelector('#customize-products-edit-name').value = e.name;
+                        document.querySelector('#customize-products-edit-desc').value = e.desc;
+                        document.querySelector('#customize-products-edit-price').value = e.price;
+                        document.querySelector('#customize-products-edit-icon').value = e.image;
+                        document.querySelector('#customize-products-edit').style.display = 'block';
+                        el2s.forEach(j => {
+                            j.style.backgroundColor = 'white';
+                        })
+                        el2.style.backgroundColor = 'lightgray';
+                    })
+                    el2s.push(el2);
+                    document.querySelector('#customize-products-container-list-products').appendChild(el2)
+                    self[index].listElement = el2;
+                    self[index].index = index;
+                    console.log(self[index])
+                    lastOpenedCreatedProductproduct = self[index]
+                    lastOpenedCreatedProductShop = i;
+                    console.log('some product passed')
+                });
             })
         })
+        document.querySelector('#customize-products-container-list-products').innerHTML = '';
+        let el2s = [];
+        i.shopProducts.forEach((e, index, self) => {
+            let el2 = document.createElement('li');
+            el2.innerText = e.name
+            el2.innerHTML += '<br>'
+            el2.style.display = 'inline';
+            el2.addEventListener('click', () => {
+                document.querySelector('#customize-products-edit-name').value = e.name;
+                document.querySelector('#customize-products-edit-desc').value = e.desc;
+                document.querySelector('#customize-products-edit-price').value = e.price;
+                document.querySelector('#customize-products-edit-icon').value = e.image;
+                document.querySelector('#customize-products-edit').style.display = 'block';
+                el2s.forEach(j => {
+                    j.style.backgroundColor = 'white';
+                })
+                el2.style.backgroundColor = 'lightgray';
+            })
+            el2s.push(el2);
+            document.querySelector('#customize-products-container-list-products').appendChild(el2)
+            self[index].listElement = el2;
+            self[index].index = index;
+            console.log(self[index])
+            lastOpenedCreatedProductproduct = self[index]
+            lastOpenedCreatedProductShop = i;
+            console.log('some product passed')
+        });
+        console.log(i.shopProducts)
+        document.querySelector('#shopslist').appendChild(el)
     })
 }
+
+document.querySelector('#customize-products-edit-remove-button').addEventListener('click', () => {
+    let shop = shopsOwnedByUser.find(i => {
+        return i.id === lastOpenedCreatedProductShop.id
+    });
+    let shopIndex = shopsOwnedByUser.indexOf(shop);
+    console.log(shop)
+    let productIndex = shop.shopProducts.findIndex((_i, index) => {
+        return index === lastOpenedCreatedProductproduct.index;
+    })
+    console.log(productIndex)
+    shopsOwnedByUser[shopIndex].shopProducts.splice(productIndex, 1)
+    shopsOwnedByUser = shopsOwnedByUser.map((i, index) => {
+        i.index = index
+        return i;
+    })
+    console.log(shopsOwnedByUser)
+    document.querySelector('#customize-products-edit').style.display = 'none'
+    updateCustomizationMenu();
+})
 
 let fileToken = 0;
 let shopsOwnedByUser = [];
@@ -68,6 +152,7 @@ if (localStorage.getItem('pocketbase_auth')) {
     )
     fileToken = await pb.files.getToken();
     shopsOwnedByUser = (await pb.collection('shops').getFullList({})).map(i => {
+        console.log(i.buttonColor)
         return {
             id: i.id,
             shopID: i.shopID,
@@ -75,8 +160,11 @@ if (localStorage.getItem('pocketbase_auth')) {
             iconSVG: i.iconSVG,
             shopName: i.shopName,
             buttonColor: i.buttonColor,
-            shopOwner: i.shopOwner
+            shopOwner: i.shopOwner,
+            shopProducts: i.shopProducts
         }
+    }).filter(i => {
+        return i.shopOwner === pb.authStore.model.username;
     })
     updateShoppingCart();
     updateCustomizationMenu();
@@ -99,7 +187,7 @@ products.forEach((i, index) => {
             <h3>${i.name}</h3>
             <p class="product-desc">${i.desc}</p>
             <p>$${i.price.toFixed(2)}</p>
-            <button class="buy-button">Add to Cart</button>
+            <button class="buy-button btn">Add to Cart</button>
         </div>
     `
     el.classList.add('product');
@@ -232,4 +320,56 @@ document.querySelector('#checkout').addEventListener('click', async  () => {
     }
     userShoppingCart = [];
     updateShoppingCart()
+    updateCustomizationMenu()
+})
+
+document.querySelector('#customize-products-edit-add-button').addEventListener('click', () => {
+    document.querySelector('#customize-product-popup').classList.add('visible')
+})
+
+document.querySelector('#customize-products-popup-cancel-button').addEventListener('click', () => {
+    document.querySelector('#customize-product-popup').classList.remove('visible')
+})
+
+document.querySelector('#customize-products-popup-create-button').addEventListener('click', async () => {
+    let productName = document.querySelector('#customize-products-edit-name-customize').value;
+    let productDesc = document.querySelector('#customize-products-edit-desc-customize').value;
+    let productIcon = document.querySelector('#customize-products-edit-icon-customize').value;
+    let productPrice = parseFloat(document.querySelector('#customize-products-edit-price-customize').value);
+
+    if(!productName ||!productDesc ||!productIcon || isNaN(productPrice) || productPrice <= 0) {
+        notify('Please fill all fields correctly.')
+        return;
+    }
+
+    let index = shopsOwnedByUser.findIndex(i => {
+        return i.shopName === lastOpenedCreatedProduct.shopName;
+    })
+
+    console.log(index)
+
+    shopsOwnedByUser[index].shopProducts.push({
+        name: productName,
+        desc: productDesc,
+        image: productIcon,
+        price: productPrice
+    })
+
+    updateCustomizationMenu();
+
+    shopsOwnedByUser.forEach(async i => {
+        await fetch('/updateShop', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userID: pb.authStore.model.id,
+                newShop: i,
+                oldShopID: i.shopID
+            })
+        })
+    })
+
+    document.querySelector('#customize-product-popup').classList.remove('visible')
 })
