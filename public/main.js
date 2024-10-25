@@ -174,7 +174,7 @@ products.forEach((i, index) => {
         <img class="card-image" src="${url}" alt="${i.name}">
         <div class="card-body">
             <h3>${i.name}</h3>
-            <p class="product-desc">${i.desc}</p>
+            <p class="product-desc">${i.desc.replace(/\n/g, '<br>')}</p>
             <p>$${i.price.toFixed(2)}</p>
             <button class="buy-button btn">Add to Cart</button>
         </div>
@@ -188,6 +188,7 @@ products.forEach((i, index) => {
         if(i.type === 'GameShop') {
             //customize simple gameShop
             document.querySelector('#customize-popup').classList.add('visible')
+            document.querySelector('#background-gray').classList.add('visible')
             notify('Please customize.')
         }else {
             notify('Sorry, this hasn\'t been implemented yet, please come back later or buy any GameShop.')
@@ -227,6 +228,7 @@ let customizeProductAddCartClickHandler = async () => {
     notify(`Successfully added product "${lastOpenedProduct.name}" to your shoppingcart.`)
     updateShoppingCart();
     document.querySelector('#customize-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
 }
 
 let customizeCreatedProductSaveChangesClickHandler = async () => {
@@ -268,6 +270,7 @@ let customizeCreatedProductSaveChangesClickHandler = async () => {
 
 document.querySelector('#close-customize-popup').addEventListener('click', () => {
     document.querySelector('#customize-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
 })
 
 document.querySelector('#customize-product-add-cart').addEventListener('click', customizeProductAddCartClickHandler)
@@ -320,16 +323,33 @@ document.querySelector('#checkout').addEventListener('click', async  () => {
         notify(response.info)
     }
     userShoppingCart = [];
+    shopsOwnedByUser = (await pb.collection('shops').getFullList({})).map(i => {
+        console.log(i.buttonColor)
+        return {
+            id: i.id,
+            shopID: i.shopID,
+            shopURL: i.shopURL,
+            iconSVG: i.iconSVG,
+            shopName: i.shopName,
+            buttonColor: i.buttonColor,
+            shopOwner: i.shopOwner,
+            shopProducts: i.shopProducts
+        }
+    }).filter(i => {
+        return i.shopOwner === pb.authStore.model.username;
+    })
     updateShoppingCart()
     updateCustomizationMenu()
 })
 
 document.querySelector('#customize-products-edit-add-button').addEventListener('click', () => {
     document.querySelector('#customize-product-popup').classList.add('visible')
+    document.querySelector('#background-gray').classList.add('visible')
 })
 
 document.querySelector('#customize-products-popup-cancel-button').addEventListener('click', () => {
     document.querySelector('#customize-product-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
 })
 
 document.querySelector('#customize-products-popup-create-button').addEventListener('click', async () => {
@@ -373,14 +393,17 @@ document.querySelector('#customize-products-popup-create-button').addEventListen
     })
 
     document.querySelector('#customize-product-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
 })
 
 document.querySelector('#customize-product-delete-shop-button').addEventListener('click', () => {
     document.querySelector('#delete-shop-popup').classList.add('visible')
+    document.querySelector('#background-gray').classList.add('visible')
 })
 
 document.querySelector('#close-delete-shop-popup').addEventListener('click', () => {
     document.querySelector('#delete-shop-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
 })
 
 document.querySelector('#delete-shop-confirm-button').addEventListener('click', async () => {
@@ -419,4 +442,36 @@ document.querySelector('#delete-shop-confirm-button').addEventListener('click', 
 
     document.querySelector('#customize-product-container').style.display = 'none';
     document.querySelector('#delete-shop-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
+})
+
+document.querySelector('#delete-account').addEventListener('click', () => {
+    document.querySelector('#delete-account-popup').classList.add('visible')
+    document.querySelector('#background-gray').classList.add('visible')
+})
+
+document.querySelector('#close-delete-account-popup').addEventListener('click', () => {
+    document.querySelector('#delete-account-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
+})
+
+document.querySelector('#delete-account-confirm-button').addEventListener('click', () => {
+    document.querySelector('#delete-account-popup').classList.remove('visible')
+    document.querySelector('#background-gray').classList.remove('visible')
+
+    fetch('/deleteAccount', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userID: pb.authStore.model.id
+        })
+    })
+
+    document.querySelector('#logout').click();
+})
+
+document.querySelector('#accept-cookies').addEventListener('click', () => {
+    document.querySelector('#cookiePopup').classList.add('hidden')
 })

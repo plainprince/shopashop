@@ -2,7 +2,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import PocketBase from 'pocketbase';
-import { cp, exists, mkdir, writeFile } from 'fs/promises';
+import { cp, exists, mkdir, rmdir, writeFile } from 'fs/promises';
 require('dotenv').config();
 
 const pb = new PocketBase("http://127.0.0.1:8090");
@@ -243,13 +243,9 @@ app.post('/shoppingcart-bought', async (req, res) => {
         let server = await pb.collection('products').getFirstListItem(`id="${i.id}"`, {})
         if (server.name === 'Simple GameShop') {
             console.log(i.shopName, i.shopURL, i.iconSVG)
-            let nameUsed = false;
-            if(shopExists(i.shopURL)) {
-                error = true;
+            if(await shopExists(i.shopURL)) {
+                error = 'url is in use';
                 continue;
-            }
-            if(nameUsed) {
-                return;
             }
             await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, username)
             console.log('created server');
@@ -270,7 +266,7 @@ app.post('/shoppingcart-bought', async (req, res) => {
     }
 
     res.json({
-        info: 'something unknown went wrong',
+        info: 'something unknown went wrong, raw error: ' + error,
         errorCode: 1
     })
 })
@@ -379,6 +375,38 @@ app.post('/deleteShop', async (req, res) => {
 
     res.json({
         info: 'deleted shop successfully',
+        errorCode: 0
+    })
+})
+
+app.post('/deleteAccount', async (req, res) => {
+    let { userID } = req.body;
+
+    let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`, {})).username;
+
+    pb.collection('users').delete(userID)
+
+    let shops = await pb.collection('shops').getFullList({});
+
+    shops = shops.filter(async i => {
+        let ownedByUser = i.shopOwner === username
+
+        if(ownedByUser) {
+            rmdir(`./apps/${i.shopID}`, {
+                recursive: true
+            }, err => {
+                if(err) console.error(new Error(err))
+            })
+            await pb.collection('shops').delete(i.id)
+        }
+
+        console.log(ownedByUser)
+
+        return ownedByUser
+    })
+
+    res.json({
+        info: 'deleted account successfully',
         errorCode: 0
     })
 })
