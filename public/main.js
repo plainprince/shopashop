@@ -148,9 +148,7 @@ let fileToken = 0;
 let shopsOwnedByUser = [];
 
 if (localStorage.getItem('pocketbase_auth')) {
-    userShoppingCart = await getDataOfUser().then(result => 
-        result.shoppingcart.shoppingcart
-    )
+    userShoppingCart = (await getDataOfUser()).shoppingcart.shoppingcart
     fileToken = await pb.files.getToken();
     shopsOwnedByUser = (await pb.collection('shops').getFullList({})).map(i => {
         console.log(i.buttonColor)
@@ -207,7 +205,7 @@ products.forEach((i, index) => {
     document.querySelector('#products').appendChild(el);
 })
 
-let customizeProductAddCartClickHandler = () => {
+let customizeProductAddCartClickHandler = async () => {
     if(!document.querySelector('#name-gs').value) {
         notify('Please enter a name.')
         return;
@@ -216,13 +214,19 @@ let customizeProductAddCartClickHandler = () => {
         notify('Please enter a valid URL.')
         return;
     }
+    let response = await fetch(`/url-exists/${document.querySelector('#url-gs').value}`);
+    response = await response.json();
+    if(response.shopExists) {
+        notify('The URL is already taken.')
+        return;
+    }
+    console.log(response)
     let product = lastOpenedProduct
     product.buttonColor = document.querySelector('#color-gs').value
     product.shopName = document.querySelector('#name-gs').value
     product.shopURL = document.querySelector('#url-gs').value
     product.iconSVG = document.querySelector('#icon-gs').value
-    console.log(product)
-    userShoppingCart.push(product)
+    userShoppingCart.push({...product})
     updateUser(userShoppingCart)
     notify(`Successfully added product "${lastOpenedProduct.name}" to your shoppingcart.`)
     updateShoppingCart();

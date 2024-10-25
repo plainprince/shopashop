@@ -186,6 +186,29 @@ app.post('/changePassword', async (req, res) => {
 
 let spamArray = []
 
+async function shopExists(shopURL) {
+    const shops = await pb.collection('shops').getFullList({});
+    const shoppingCarts = (await pb.collection('users').getFullList({})).map(i => {
+        return i.shoppingcart.shoppingcart
+    })
+    let shoppingcartContents = [];
+    shoppingCarts.forEach(i => {
+        shoppingcartContents.push(...i)
+    })
+    let insideAShoppingCart = shoppingcartContents.some(content => {
+        return content.shopURL === shopURL
+    })
+    let insideAShop = shops.some(shop => shop.shopURL === '/' + shopURL);
+    return insideAShop || insideAShoppingCart
+}
+
+app.get('/url-exists/:shopURL', async (req, res) => {
+    let {shopURL} = req.params;
+    res.json({
+        shopExists: await shopExists(shopURL)
+    })
+})
+
 app.post('/shoppingcart-bought', async (req, res) => {
     const { userID, shoppingcart } = req.body;
     let username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
@@ -202,18 +225,28 @@ app.post('/shoppingcart-bought', async (req, res) => {
 
     let data = await pb.collection('users').getFirstListItem(`username="${username}"`, {})
     data.shoppingcart.shoppingcart = [];
+
     await pb.collection('users').update(data.id, data)
 
     let error = false;
 
-    shoppingcart.forEach(async i => {
+    for (let index in shoppingcart) {
+        let i = shoppingcart[index]
         let server = await pb.collection('products').getFirstListItem(`id="${i.id}"`, {})
         if (server.name === 'Simple GameShop') {
             console.log(i.shopName, i.shopURL, i.iconSVG)
+            let nameUsed = false;
+            if(shopExists(i.shopURL)) {
+                error = true;
+                continue;
+            }
+            if(nameUsed) {
+                return;
+            }
             await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, username)
             console.log('created server');
         }
-    });
+    }
 
     spamArray = spamArray.filter(i => {
         console.log(i)
