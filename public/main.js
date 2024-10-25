@@ -189,6 +189,8 @@ products.forEach((i, index) => {
             //customize simple gameShop
             document.querySelector('#customize-popup').classList.add('visible')
             notify('Please customize.')
+        }else {
+            notify('Sorry, this hasn\'t been implemented yet, please come back later or buy any GameShop.')
         }
     })
 

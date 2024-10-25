@@ -1,3 +1,5 @@
+@import url(./variables.css);
+
 #main {
     display: none;
     margin-top: 12vh;
@@ -113,9 +115,11 @@
 
 button,
 input[type="submit"] {
-    background-color: white;
+    background-color: var(--button-secondary-color);
     padding: 12px 16px;
-    border: 0.15rem solid #1a89ff;
+    border-width: 0.15rem;
+    border-style: solid;
+    border-color: var(--button-primary-color);
     border-radius: 0.3rem;
     transition-duration: 0.3s;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -123,16 +127,16 @@ input[type="submit"] {
 
 button:hover,
 input[type="submit"]:hover {
-    background-color: #1a89ff;
+    background-color: var(--button-primary-color);
     transition-duration: 0.3s;
-    color: white;
+    color: var(--button-secondary-color);
 }
 
 button:hover:disabled,
 input[type="submit"]:hover:disabled,
 button:disabled,
 input[type="submit"]:disabled {
-    background-color: white;
+    background-color: var(--button-secondary-color);
     color: gray;
     cursor: not-allowed;
 }

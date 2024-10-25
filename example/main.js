@@ -25,6 +25,10 @@ function svgToBase64(svg) {
 let data = await pb
     .collection('shops')
     .getFirstListItem(`shopURL="/${shopURL}"`, {})
+
+window.name = data.shopName;
+document.title = data.shopName;
+document.querySelector('title').innerHTML = data.shopName; // just for safety
 data.shopProducts.forEach(async i => {
     let el = document.createElement("div");
 

@@ -36,7 +36,7 @@ function sendMail(mailSettings) {
     });
 }
 
-async function startServer(shopID, shopURL, iconSVG) {
+async function startServer(shopID, shopURL, iconSVG, buttonColor) {
     if (!(await exists('./apps'))) {
         await mkdir('./apps', {});
     }
@@ -46,13 +46,21 @@ async function startServer(shopID, shopURL, iconSVG) {
     await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
         if (err) throw new Error(err)
     })
+    await writeFile(`./apps/${shopID}/variables.css`, `
+        :root {
+            --button-primary-color: ${buttonColor};
+            --button-secondary-color: white;
+        }    
+    `, (err) => {
+        if (err) throw new Error(err);
+    })
     app.use(`${shopURL}`, express.static(`./apps/${shopID}/`))
     console.log(shopID, shopURL)
 }
 
 async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, shopOwner) {
     return new Promise(async resolve => {
-        await startServer(shopID, '/' + shopUrl, iconSVG)
+        await startServer(shopID, '/' + shopUrl, iconSVG, buttonColor)
 
         await pb.collection('shops').create({
             shopName: name,
@@ -93,7 +101,7 @@ async function createProduct(shopURL, product, svg) {
 }
 
 (await pb.collection('shops').getFullList()).forEach(i => {
-    startServer(i.shopID, i.shopURL, i.iconSVG)
+    startServer(i.shopID, i.shopURL, i.iconSVG, i.buttonColor)
 })
 
 app.use(cors());
@@ -309,6 +317,15 @@ app.post('/updateShop', async (req, res) => {
 
     try {
         await pb.collection('shops').update(oldShopEntryID, newShop)
+
+        await writeFile(`./apps/${shopID}/variables.css`, `
+            :root {
+                --button-primary-color: ${newShop.buttonColor};
+                --button-secondary-color: white;
+            }    
+        `, (err) => {
+            if (err) throw new Error(err);
+        })
     } catch(e) {
         console.error(e)
         res.json({
