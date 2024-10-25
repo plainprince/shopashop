@@ -117,7 +117,7 @@ document.querySelector('form#login').addEventListener('submit', async e => {
 
     await pb.collection('users').authWithPassword(email, password).catch((e) => {
         console.log(e);
-        document.querySelector('#output').innerHTML = 'invalid email/password';
+        notify('invalid email/password');
         error = true;
     });
 
@@ -176,10 +176,15 @@ async function changePassword() {
 }
 
 async function getDataOfUser() {
-    let data = await pb
+    try {
+        let data = await pb
         .collection('users')
         .getOne(pb.authStore.model.id)
-    return data;
+        return data;
+    }catch {
+        notify('your session has ended')
+        document.querySelector('#logout').click();
+    }
 }
 
 async function getCollectionData(collection) {

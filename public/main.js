@@ -61,6 +61,7 @@ function updateCustomizationMenu() {
                     document.querySelector('#customize-product-container > #color-gs-customize').value = e.buttonColor;
                     document.querySelector('#customize-product-container > #name-gs-customize').value = e.name;
                     document.querySelector('#customize-product-container > #url-gs-customize').value = e.shopURL.substring(1);
+                    document.querySelector('#customize-products-edit').style.display = 'none';
                 })
                 el2s = [];
                 document.querySelector('#customize-products-container-list-products').innerHTML = '';
