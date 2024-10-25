@@ -31,15 +31,10 @@ let lastOpenedCreatedProductShop = null;
 
 function updateCustomizationMenu() {
     document.querySelector('#shopslist').innerHTML = '';
-    console.log(shopsOwnedByUser)
     shopsOwnedByUser.forEach(i => {
-        console.log('some shop passed')
         if(i.shopOwner !== pb.authStore.model.username) {
             return;
         }
-        console.log('some shops owner is the user', i.shopName)
-        console.log(i.shopOwner)
-        console.log(i.shopProducts)
         let el = document.createElement('tr')
         el.innerHTML = `
             <li>${i.shopName}</li>
@@ -85,10 +80,8 @@ function updateCustomizationMenu() {
                     document.querySelector('#customize-products-container-list-products').appendChild(el2)
                     self[index].listElement = el2;
                     self[index].index = index;
-                    console.log(self[index])
                     lastOpenedCreatedProductproduct = self[index]
                     lastOpenedCreatedProductShop = i;
-                    console.log('some product passed')
                 });
             })
         })
@@ -114,12 +107,9 @@ function updateCustomizationMenu() {
             document.querySelector('#customize-products-container-list-products').appendChild(el2)
             self[index].listElement = el2;
             self[index].index = index;
-            console.log(self[index])
             lastOpenedCreatedProductproduct = self[index]
             lastOpenedCreatedProductShop = i;
-            console.log('some product passed')
         });
-        console.log(i.shopProducts)
         document.querySelector('#shopslist').appendChild(el)
     })
 }
@@ -227,6 +217,10 @@ let customizeProductAddCartClickHandler = async () => {
     product.shopURL = document.querySelector('#url-gs').value
     product.iconSVG = document.querySelector('#icon-gs').value
     userShoppingCart.push({...product})
+    document.querySelector('#color-gs').value = '';
+    document.querySelector('#name-gs').value = '';
+    document.querySelector('#url-gs').value = '';
+    document.querySelector('#icon-gs').value = '';
     updateUser(userShoppingCart)
     notify(`Successfully added product "${lastOpenedProduct.name}" to your shoppingcart.`)
     updateShoppingCart();
@@ -377,4 +371,50 @@ document.querySelector('#customize-products-popup-create-button').addEventListen
     })
 
     document.querySelector('#customize-product-popup').classList.remove('visible')
+})
+
+document.querySelector('#customize-product-delete-shop-button').addEventListener('click', () => {
+    document.querySelector('#delete-shop-popup').classList.add('visible')
+})
+
+document.querySelector('#close-delete-shop-popup').addEventListener('click', () => {
+    document.querySelector('#delete-shop-popup').classList.remove('visible')
+})
+
+document.querySelector('#delete-shop-confirm-button').addEventListener('click', async () => {
+    let response = await fetch('/deleteShop', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            shopID: lastOpenedCreatedProduct.shopID,
+            userID: pb.authStore.model.id
+        })
+    })
+
+    response = await response.json();
+
+    notify(response.info)
+
+    shopsOwnedByUser = (await pb.collection('shops').getFullList({})).map(i => {
+        console.log(i.buttonColor)
+        return {
+            id: i.id,
+            shopID: i.shopID,
+            shopURL: i.shopURL,
+            iconSVG: i.iconSVG,
+            shopName: i.shopName,
+            buttonColor: i.buttonColor,
+            shopOwner: i.shopOwner,
+            shopProducts: i.shopProducts
+        }
+    }).filter(i => {
+        return i.shopOwner === pb.authStore.model.username;
+    })
+
+    updateCustomizationMenu();
+
+    document.querySelector('#customize-product-container').style.display = 'none';
+    document.querySelector('#delete-shop-popup').classList.remove('visible')
 })

@@ -324,6 +324,48 @@ app.post('/updateShop', async (req, res) => {
     })
 })
 
+app.post('/deleteShop', async (req, res) => {
+    let { userID, shopID } = req.body;
+
+    let username;
+    let shop;
+
+    try {
+        username = (await pb.collection('users').getFirstListItem(`id="${userID}"`)).username
+        shop = await pb.collection('shops').getFirstListItem(`shopID="${shopID}"`)
+    }catch (e) {
+        console.error(e)
+        res.json({
+            info: 'failed to find user or shop',
+            errorCode: 1
+        })
+        return;
+    }
+
+    if(!(shop.shopOwner === username)) {
+        res.json({
+            info: 'you are not the owner of this shop',
+            errorCode: 1
+        })
+        return;
+    }
+
+    let shopRoute = shop.shopURL;
+
+    const middlewareIndex = app._router.stack.findIndex(layer => {
+        return layer.path === shopRoute
+    });
+
+    app._router.stack.splice(middlewareIndex, 1);
+
+    await pb.collection('shops').delete(shop.id);
+
+    res.json({
+        info: 'deleted shop successfully',
+        errorCode: 0
+    })
+})
+
 app.listen(80, async () => {
     console.log('server listening on port 80');
 })

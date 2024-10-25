@@ -301,7 +301,7 @@ th {
     }
 }
 
-#customize-popup, #customize-product-popup {
+#customize-popup, #customize-product-popup, #delete-shop-popup {
     position: fixed;
     z-index: 999999;
     top: 50%;
@@ -316,7 +316,7 @@ th {
     transition: opacity 0.3s ease-in-out;
 }
 
-#customize-popup.visible, #customize-product-popup.visible {
+#customize-popup.visible, #customize-product-popup.visible, #delete-shop-popup.visible {
     opacity: 1;
     display: block;
 }
@@ -353,4 +353,23 @@ th {
 
 #customize-products-edit {
     display: none;
+}
+
+.btn.red-btn {
+    border-color: red;
+}
+
+.btn.red-btn:hover {
+    background-color: red;
+}
+
+.red-text {
+    font-weight: 900;
+    color: red;
+    text-align: center;
+    font-size: larger;
+}
+
+* {
+    font-family: sans-serif;
 }
