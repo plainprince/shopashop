@@ -36,7 +36,7 @@ function sendMail(mailSettings) {
     });
 }
 
-async function startServer(shopID, shopURL, iconSVG, buttonColor, secondaryButtonColor) {
+async function startServer(shopID, shopURL, iconSVG, buttonColor, secondaryButtonColor, textButtonColor) {
     if (!(await exists('./apps'))) {
         await mkdir('./apps', {});
     }
@@ -51,6 +51,7 @@ async function startServer(shopID, shopURL, iconSVG, buttonColor, secondaryButto
 :root {
     --button-primary-color: ${buttonColor};
     --button-secondary-color: ${secondaryButtonColor};
+    --button-text-color: ${textButtonColor};
 }    
     `, (err) => {
         if (err) throw new Error(err);
@@ -59,9 +60,9 @@ async function startServer(shopID, shopURL, iconSVG, buttonColor, secondaryButto
     console.log(shopID, shopURL)
 }
 
-async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, secondaryButtonColor, shopOwner) {
+async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, secondaryButtonColor, textButtonColor, shopOwner) {
     return new Promise(async resolve => {
-        await startServer(shopID, '/' + shopUrl, iconSVG, buttonColor, secondaryButtonColor)
+        await startServer(shopID, '/' + shopUrl, iconSVG, buttonColor, secondaryButtonColor, textButtonColor)
 
         await pb.collection('shops').create({
             shopName: name,
@@ -80,7 +81,7 @@ async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColo
 }
 
 (await pb.collection('shops').getFullList()).forEach(i => {
-    startServer(i.shopID, i.shopURL, i.iconSVG, i.buttonColor, i.secondaryButtonColor)
+    startServer(i.shopID, i.shopURL, i.iconSVG, i.buttonColor, i.secondaryButtonColor, i.textButtonColor)
 })
 
 app.use(cors());
@@ -226,7 +227,7 @@ app.post('/shoppingcart-bought', async (req, res) => {
                 error = 'url is in use';
                 continue;
             }
-            await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, i.secondaryButtonColor, username)
+            await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, i.secondaryButtonColor, i.textButtonColor, username)
             console.log('created server');
         }
     }
@@ -299,6 +300,7 @@ app.post('/updateShop', async (req, res) => {
 :root {
     --button-primary-color: ${newShop.buttonColor};
     --button-secondary-color: ${newShop.secondaryButtonColor};
+    --button-text-color: ${newShop.textButtonCOlor};
 }    
         `, (err) => {
             if (err) throw new Error(err);

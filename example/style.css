@@ -120,6 +120,7 @@ input[type="submit"] {
     border-width: 0.15rem;
     border-style: solid;
     border-color: var(--button-primary-color);
+    color: var(--button-text-color);
     border-radius: 0.3rem;
     transition-duration: 0.3s;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
