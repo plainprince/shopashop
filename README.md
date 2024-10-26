@@ -2,9 +2,7 @@
 
 ## To install dependencies:
 
-- ```bash
-bun install
-```
+- `bun install`
 
 - download PocketBase
 - Create a admin user with the following credentials: test@bot.com, botbotbotbot
@@ -12,6 +10,4 @@ bun install
 ## To run:
 
 - start pocketbase
-- ```bash
-bun run index.js
-```
+- `bun run index.js`
