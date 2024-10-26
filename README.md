@@ -1,15 +1,17 @@
 # Shopshop
 
-To install dependencies:
+## To install dependencies:
 
-```bash
+- ```bash
 bun install
 ```
 
-To run:
+- download PocketBase
+- Create a admin user with the following credentials: test@bot.com, botbotbotbot
 
-```bash
+## To run:
+
+- start pocketbase
+- ```bash
 bun run index.js
 ```
-
-This project was created using `bun init` in bun v1.1.29. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

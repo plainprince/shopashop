@@ -9,3 +9,5 @@ package-lock.json
 bun.lockb
 .env
 apps
+pocketbase
+pocketbase-linux
