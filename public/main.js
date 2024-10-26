@@ -41,6 +41,7 @@ function updateCustomizationMenu() {
         `
         el.querySelector('li').addEventListener('click', () => {
             document.querySelector('#customize-product-container > #color-gs-customize').value = i.buttonColor;
+            document.querySelector('#customize-product-container > #secondary-color-gs-customize').value = i.secondaryButtonColor;
             document.querySelector('#customize-product-container > #name-gs-customize').value = i.shopName;
             document.querySelector('#customize-product-container > #url-gs-customize').value = i.shopURL.substring(1);
             document.querySelector('#customize-product-container > #icon-gs-customize').value = i.iconSVG;
@@ -53,9 +54,6 @@ function updateCustomizationMenu() {
                 let el3 = document.createElement('li');
                 el3.innerHTML = `${e.name}`;
                 el3.addEventListener('click', () => {
-                    document.querySelector('#customize-product-container > #color-gs-customize').value = e.buttonColor;
-                    document.querySelector('#customize-product-container > #name-gs-customize').value = e.name;
-                    document.querySelector('#customize-product-container > #url-gs-customize').value = e.shopURL.substring(1);
                     document.querySelector('#customize-products-edit').style.display = 'none';
                 })
                 el2s = [];
@@ -149,6 +147,7 @@ if (localStorage.getItem('pocketbase_auth')) {
             iconSVG: i.iconSVG,
             shopName: i.shopName,
             buttonColor: i.buttonColor,
+            secondaryButtonColor: i.secondaryButtonColor,
             shopOwner: i.shopOwner,
             shopProducts: i.shopProducts
         }
@@ -216,6 +215,7 @@ let customizeProductAddCartClickHandler = async () => {
     console.log(response)
     let product = lastOpenedProduct
     product.buttonColor = document.querySelector('#color-gs').value
+    product.secondaryButtonColor = document.querySelector('#secondary-color-gs').value;
     product.shopName = document.querySelector('#name-gs').value
     product.shopURL = document.querySelector('#url-gs').value
     product.iconSVG = document.querySelector('#icon-gs').value
@@ -242,6 +242,7 @@ let customizeCreatedProductSaveChangesClickHandler = async () => {
     }
     let product = lastOpenedCreatedProduct;
     product.buttonColor = document.querySelector('#color-gs-customize').value
+    product.secondaryButtonColor = document.querySelector('#secondary-color-gs-customize').value;
     product.shopName = document.querySelector('#name-gs-customize').value
     product.shopURL = '/' + document.querySelector('#url-gs-customize').value
     product.iconSVG = document.querySelector('#icon-gs-customize').value
@@ -332,6 +333,7 @@ document.querySelector('#checkout').addEventListener('click', async  () => {
             iconSVG: i.iconSVG,
             shopName: i.shopName,
             buttonColor: i.buttonColor,
+            secondaryButtonColor: i.secondaryButtonColor,
             shopOwner: i.shopOwner,
             shopProducts: i.shopProducts
         }
@@ -431,6 +433,7 @@ document.querySelector('#delete-shop-confirm-button').addEventListener('click', 
             iconSVG: i.iconSVG,
             shopName: i.shopName,
             buttonColor: i.buttonColor,
+            secondaryButtonColor: i.secondaryButtonColor,
             shopOwner: i.shopOwner,
             shopProducts: i.shopProducts
         }
@@ -472,6 +475,11 @@ document.querySelector('#delete-account-confirm-button').addEventListener('click
     document.querySelector('#logout').click();
 })
 
+if(localStorage.getItem('cookiePopup') === '1') {
+    document.querySelector('#cookiePopup').classList.add('hidden')
+}
+
 document.querySelector('#accept-cookies').addEventListener('click', () => {
     document.querySelector('#cookiePopup').classList.add('hidden')
+    localStorage.setItem('cookiePopup', '1')
 })

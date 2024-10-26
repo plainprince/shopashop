@@ -36,7 +36,7 @@ function sendMail(mailSettings) {
     });
 }
 
-async function startServer(shopID, shopURL, iconSVG, buttonColor) {
+async function startServer(shopID, shopURL, iconSVG, buttonColor, secondaryButtonColor) {
     if (!(await exists('./apps'))) {
         await mkdir('./apps', {});
     }
@@ -46,11 +46,12 @@ async function startServer(shopID, shopURL, iconSVG, buttonColor) {
     await writeFile(`./apps/${shopID}/images/icon.svg`, iconSVG, (err) => {
         if (err) throw new Error(err)
     })
+    console.log(secondaryButtonColor);
     await writeFile(`./apps/${shopID}/variables.css`, `
-        :root {
-            --button-primary-color: ${buttonColor};
-            --button-secondary-color: white;
-        }    
+:root {
+    --button-primary-color: ${buttonColor};
+    --button-secondary-color: ${secondaryButtonColor};
+}    
     `, (err) => {
         if (err) throw new Error(err);
     })
@@ -58,9 +59,9 @@ async function startServer(shopID, shopURL, iconSVG, buttonColor) {
     console.log(shopID, shopURL)
 }
 
-async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, shopOwner) {
+async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColor, secondaryButtonColor, shopOwner) {
     return new Promise(async resolve => {
-        await startServer(shopID, '/' + shopUrl, iconSVG, buttonColor)
+        await startServer(shopID, '/' + shopUrl, iconSVG, buttonColor, secondaryButtonColor)
 
         await pb.collection('shops').create({
             shopName: name,
@@ -69,6 +70,7 @@ async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColo
             boughtProducts: [],
             shopURL: '/' + shopUrl,
             buttonColor: buttonColor,
+            secondaryButtonColor,
             shopOwner,
             iconSVG
         })
@@ -77,31 +79,8 @@ async function createServer(name, shopID, shopUrl, iconSVG, products, buttonColo
     })
 }
 
-async function createProduct(shopURL, product, svg) {
-    let shop = await pb.collection('shops').getFirstListItem(`shopURL="${shopURL}"`, {})
-    let shopID = shop.shopID;
-    product.image = `/${shopURL}/images/productImages/${shop.shopProducts.length + 1}.svg`
-    shop.shopProducts.push(product);
-    await pb.collection('shops').update(shop.id, shop)
-    await writeFile(__dirname + `/apps/${shopID}/images/productImages/${shop.shopProducts.length}.svg`, svg, (err) => {
-        if (err) throw err
-    })
-
-    // handle payments too
-
-    app.post(`/${shopURL}/bought-product/`, async (req, res) => {
-        let { product, boughtBy } = req.body
-
-        product.boughtBy = boughtBy;
-
-        shop.boughtProducts.push(product)
-
-        pb.collection('shops').update(shop.id, shop);
-    })
-}
-
 (await pb.collection('shops').getFullList()).forEach(i => {
-    startServer(i.shopID, i.shopURL, i.iconSVG, i.buttonColor)
+    startServer(i.shopID, i.shopURL, i.iconSVG, i.buttonColor, i.secondaryButtonColor)
 })
 
 app.use(cors());
@@ -247,7 +226,7 @@ app.post('/shoppingcart-bought', async (req, res) => {
                 error = 'url is in use';
                 continue;
             }
-            await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, username)
+            await createServer(i.shopName, shopID++, i.shopURL, i.iconSVG, null, i.buttonColor, i.secondaryButtonColor, username)
             console.log('created server');
         }
     }
@@ -314,11 +293,13 @@ app.post('/updateShop', async (req, res) => {
     try {
         await pb.collection('shops').update(oldShopEntryID, newShop)
 
+        console.log(newShop.secondaryButtonColor)
+
         await writeFile(`./apps/${shopID}/variables.css`, `
-            :root {
-                --button-primary-color: ${newShop.buttonColor};
-                --button-secondary-color: white;
-            }    
+:root {
+    --button-primary-color: ${newShop.buttonColor};
+    --button-secondary-color: ${newShop.secondaryButtonColor};
+}    
         `, (err) => {
             if (err) throw new Error(err);
         })
