@@ -250,22 +250,27 @@ input[type=email] {
     width: 33%;
 }
 
+#products {
+    display: flex; /* Use flexbox for layout */
+    flex-wrap: wrap; /* Allow cards to wrap onto the next line */
+    justify-content: center; /* Center the cards horizontally */
+}
+
 .product {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 0.2rem;
-    width: 23%;
-    height: auto;
-    display: inline-block;
-    margin: 0.2rem;
+    width: 300px; /* Set a fixed width for the card */
+    height: auto; /* Allow height to vary based on content */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack image and body vertically */
+    margin: 0.5rem; /* Space between cards */
     transition: 0.3s;
 }
 
 .card-image {
-    object-fit: cover;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
+    object-fit: cover; /* Maintain aspect ratio */
+    width: 100%; /* Make the image fill the card width */
+    height: auto; /* Maintain the aspect ratio */
 }
 
 .product:hover {
@@ -273,8 +278,33 @@ input[type=email] {
 }
 
 .card-body {
-    left: 0;
-    padding: 2px 16px;
+    padding: 2px 16px; /* Add padding around the card body */
+    flex-grow: 1; /* Allow the body to grow and fill available space */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 600px) { /* Mobile */
+    .product {
+        width: calc(50% - 1rem); /* 2 cards per row */
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) { /* Tablet */
+    .product {
+        width: calc(33.33% - 1rem); /* 3 cards per row */
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) { /* Laptop */
+    .product {
+        width: calc(25% - 1rem); /* 4 cards per row */
+    }
+}
+
+@media (min-width: 1201px) { /* Desktop */
+    .product {
+        width: calc(20% - 1rem); /* 5 cards per row */
+    }
 }
 
 th {
@@ -287,18 +317,6 @@ th {
     left: 1vh;
     width: 8vh;
     height: 8vh;
-}
-
-@media screen and (max-width: 499px) {
-    .product {
-        width: 47%;
-    }
-}
-
-@media screen and (min-width: 500px) and (max-width: 1176px) {
-    .product {
-        width: 32%;
-    }
 }
 
 #customize-popup,
