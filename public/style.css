@@ -265,6 +265,7 @@ input[type=email] {
     flex-direction: column; /* Stack image and body vertically */
     margin: 0.5rem; /* Space between cards */
     transition: 0.3s;
+    padding-bottom: 1rem;
 }
 
 .card-image {
